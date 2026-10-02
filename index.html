@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر مود الشرطة MK3</title>
+
+    <!-- أيقونة الموقع (Favicon) بوضع الرابط المباشر لشعارك -->
+    <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1540669170130231366/1555604464285646919/fcbf9f7a-7a06-44ae-b1ce-3f94669d63ea__1_-removebg-preview.png?backend=b2&ex=6ac1210e&is=6abfcf8e&hm=8bb8c7f05d8fdfd650ce3a17b02ed540e6c343bbaaa17845e22fdc687860e6d7&">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        orangeTheme: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                            950: '#451a03',
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #070402;
+            color: #fef3c7;
+            overflow-x: hidden;
+        }
+
+        .custom-cursor {
+            pointer-events: none;
+            position: fixed;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245,158,11,0.85) 0%, rgba(217,119,6,0.3) 50%, transparent 80%);
+            box-shadow: 0 0 35px 12px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(254, 243, 199, 0.5);
+            transition: transform 0.05s ease-out;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+
+        .glass-panel {
+            background: rgba(20, 11, 5, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            box-shadow: 0 10px 40px 0 rgba(69, 26, 3, 0.5), inset 0 1px 0 0 rgba(254, 243, 199, 0.15);
+        }
+
+        .glass-card {
+            background: rgba(30, 16, 8, 0.75);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(245, 158, 11, 0.8);
+            box-shadow: 0 20px 45px -10px rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070402; }
+        ::-webkit-scrollbar-thumb {
+            background: #b45309;
+            border-radius: 4px;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #f59e0b; }
+
+        @keyframes orangeGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 0 15px rgba(245, 158, 11, 0.2); }
+            50% { box-shadow: 0 0 60px rgba(245, 158, 11, 0.8), inset 0 0 25px rgba(254, 243, 199, 0.4); }
+        }
+        .animate-orange-glow { animation: orangeGlow 3.5s infinite ease-in-out; }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+        .animate-float { animation: floatLogo 4s infinite ease-in-out; }
+    </style>
+</head>
+<body class="min-h-screen relative select-none">
+
+    <div id="cursor" class="custom-cursor hidden md:block"></div>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#070402] px-4 transition-all duration-700">
+        <div class="absolute w-[500px] h-[500px] bg-amber-600/15 rounded-full blur-[120px] -top-20 -left-20 pointer-events-none"></div>
+        <div class="absolute w-[500px] h-[500px] bg-orange-600/15 rounded-full blur-[120px] -bottom-20 -right-20 pointer-events-none"></div>
+
+        <div class="glass-panel p-8 md:p-14 rounded-[2.5rem] flex flex-col items-center max-w-lg w-full text-center relative z-10 animate-orange-glow border-2 border-amber-500/50">
+            <div class="relative w-48 h-48 md:w-56 md:h-56 mb-6 group animate-float mt-2">
+                <div class="absolute inset-0 bg-gradient-to-tr from-amber-500 to-orange-500 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                <img src="https://cdn.discordapp.com/attachments/1540669170130231366/1555604464285646919/fcbf9f7a-7a06-44ae-b1ce-3f94669d63ea__1_-removebg-preview.png?backend=b2&ex=6ac1210e&is=6abfcf8e&hm=8bb8c7f05d8fdfd650ce3a17b02ed540e6c343bbaaa17845e22fdc687860e6d7&" alt="" class="relative w-full h-full object-contain rounded-full border-4 border-amber-400/70 shadow-2xl bg-gradient-to-b from-amber-950/40 to-black/60 p-2">
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-black text-white mb-8 tracking-wide drop-shadow-md">
+                متجر مود الشرطة MK3
+            </h1>
+
+            <button onclick="enterStore()" class="w-full py-4 px-8 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white font-black text-lg rounded-2xl shadow-xl shadow-amber-600/40 transform active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 border border-amber-300/40">
+                <i class="fa-solid fa-store text-amber-200"></i>
+                <span>تصفح المتجر</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Store -->
+    <div id="main-store" class="hidden min-h-screen flex flex-col justify-between">
+        <!-- Top Navbar -->
+        <header class="glass-panel sticky top-0 z-40 border-b border-amber-500/30 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="https://cdn.discordapp.com/attachments/1540669170130231366/1555604464285646919/fcbf9f7a-7a06-44ae-b1ce-3f94669d63ea__1_-removebg-preview.png?backend=b2&ex=6ac1210e&is=6abfcf8e&hm=8bb8c7f05d8fdfd650ce3a17b02ed540e6c343bbaaa17845e22fdc687860e6d7&" alt="" class="w-12 h-12 object-contain rounded-full border-2 border-amber-400/60 p-0.5 bg-black/40 shadow-md">
+                <div>
+                    <span class="text-lg md:text-xl font-black text-white tracking-wide block">متجر مود الشرطة MK3</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm font-bold text-amber-200">
+                <a href="#" onclick="filterCategory('all'); return false;" class="hover:text-amber-400 transition">الرئيسية</a>
+                <a href="#" onclick="filterCategory('citizen'); return false;" class="hover:text-amber-400 transition">حزم المواطنين</a>
+                <a href="#" onclick="filterCategory('military'); return false;" class="hover:text-amber-400 transition">حزم العسكرية</a>
+                <a href="https://discord.gg" target="_blank" class="hover:text-amber-400 transition">الدعم الفني</a>
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <button onclick="scrollToCart()" class="relative glass-card px-5 py-2.5 rounded-2xl flex items-center gap-2.5 hover:bg-amber-950/60 text-amber-200 transition border border-amber-500/40">
+                    <i class="fa-solid fa-cart-shopping text-amber-400"></i>
+                    <span class="hidden sm:inline font-bold">السلة</span>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-black shadow-lg border border-amber-200/50">0</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 py-8 flex-grow grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="glass-panel p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 border border-amber-500/30">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button onclick="filterCategory('all')" id="cat-all" class="category-btn px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md transition">
+                            <i class="fa-solid fa-border-all ml-1"></i> الكل
+                        </button>
+                        <button onclick="filterCategory('citizen')" id="cat-citizen" class="category-btn px-4 py-2 rounded-xl text-sm font-bold bg-amber-950/60 text-amber-200 hover:bg-amber-900/60 border border-amber-700/40 transition">
+                            <i class="fa-solid fa-users ml-1"></i> حزم مواطنين
+                        </button>
+                        <button onclick="filterCategory('military')" id="cat-military" class="category-btn px-4 py-2 rounded-xl text-sm font-bold bg-amber-950/60 text-amber-200 hover:bg-amber-900/60 border border-amber-700/40 transition">
+                            <i class="fa-solid fa-shield-halved ml-1"></i> حزم عسكريه
+                        </button>
+                    </div>
+                    <span id="product-count-badge" class="text-xs text-amber-300 bg-amber-900/40 px-3.5 py-1.5 rounded-full border border-amber-500/40 font-bold shadow-inner">
+                        عرض جميع المنتجات
+                    </span>
+                </div>
+
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
+            </div>
+
+            <div class="lg:col-span-1" id="cart-section">
+                <div class="glass-panel rounded-3xl p-6 sticky top-24 border border-amber-500/40 shadow-2xl">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-amber-500/20">
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping text-amber-400"></i>
+                            سلة المشتريات
+                        </h3>
+                        <span id="cart-count-text" class="text-xs bg-amber-950 text-amber-300 px-3 py-1 rounded-xl border border-amber-600/40 font-bold">0 منتجات</span>
+                    </div>
+
+                    <div id="cart-items" class="space-y-3 max-h-56 overflow-y-auto mb-6 pr-1">
+                        <div class="text-center py-8 text-amber-300/40 text-sm">
+                            <i class="fa-solid fa-cart-arrow-down text-3xl mb-2 block text-amber-500/50"></i>
+                            السلة فارغة حالياً
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-amber-500/20">
+                        <div>
+                            <label class="block text-xs font-bold text-amber-300 mb-1.5">يوزر الدسكورد (اسم اللاعب)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-amber-400"><i class="fa-brands fa-discord"></i></span>
+                                <input type="text" id="discord-user" placeholder="example#1234 أو @username" class="w-full pr-10 pl-4 py-2.5 bg-amber-950/40 border border-amber-600/40 rounded-xl text-white text-sm focus:outline-none focus:border-amber-400 transition font-medium">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-amber-300 mb-1.5">نوع الدفع</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer glass-card p-3 rounded-xl flex items-center justify-center gap-2 border border-amber-700/40 hover:border-amber-400 has-[:checked]:border-amber-400 has-[:checked]:bg-amber-900/50 transition">
+                                    <input type="radio" name="payment-method" value="كردت" checked onchange="updateCartUI()" class="text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm font-bold text-white">كردت</span>
+                                </label>
+                                <label class="cursor-pointer glass-card p-3 rounded-xl flex items-center justify-center gap-2 border border-amber-700/40 hover:border-amber-400 has-[:checked]:border-amber-400 has-[:checked]:bg-amber-900/50 transition">
+                                    <input type="radio" name="payment-method" value="ريال" onchange="updateCartUI()" class="text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm font-bold text-white">ريال</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-amber-300 mb-1.5">إرفاق صورة الدفع</label>
+                            <div class="relative border-2 border-dashed border-amber-700/60 rounded-xl p-3 text-center hover:border-amber-400 transition bg-amber-950/20">
+                                <input type="file" id="receipt-file" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(event)">
+                                <div id="file-upload-label" class="flex flex-col items-center justify-center text-amber-300/80 text-xs">
+                                    <i class="fa-solid fa-cloud-arrow-up text-lg text-amber-400 mb-1"></i>
+                                    <span>اضغط لإرفاق صورة التحويل أو السكرين</span>
+                                </div>
+                            </div>
+                            <input type="text" id="receipt-link" placeholder="أو وضع رابط الصورة هنا..." class="w-full mt-2 px-3 py-2 bg-amber-950/40 border border-amber-600/40 rounded-xl text-white text-xs focus:outline-none focus:border-amber-400 transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-amber-300 mb-1.5">كود الخصم</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="coupon-input" placeholder="أدخل الكود..." class="flex-grow px-4 py-2 bg-amber-950/40 border border-amber-600/40 rounded-xl text-white text-sm uppercase focus:outline-none focus:border-amber-400 transition font-bold">
+                                <button onclick="applyCoupon()" class="px-4 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl text-sm font-bold transition shadow-md">تطبيق</button>
+                            </div>
+                            <div id="coupon-message" class="text-xs mt-1.5 hidden font-bold"></div>
+                        </div>
+
+                        <div class="space-y-1.5 pt-3 border-t border-amber-500/20 text-sm font-medium">
+                            <div class="flex justify-between text-amber-200/80">
+                                <span>المجموع الفرعي:</span>
+                                <span id="subtotal-price">0 كردت</span>
+                            </div>
+                            <div id="discount-row" class="flex justify-between text-emerald-400 hidden font-bold">
+                                <span>الخصم (<span id="discount-name"></span>):</span>
+                                <span id="discount-price">-0 كردت</span>
+                            </div>
+                            <div class="flex justify-between text-white font-black text-base pt-2 border-t border-amber-500/20">
+                                <span>المجموع النهائي:</span>
+                                <span id="total-price" class="text-amber-400">0 كردت</span>
+                            </div>
+                        </div>
+
+                        <button onclick="processCheckout()" id="checkout-btn" class="w-full py-3.5 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white font-black rounded-xl shadow-lg shadow-amber-600/40 transition flex items-center justify-center gap-2 border border-amber-300/40">
+                            <i class="fa-solid fa-paper-plane text-amber-200"></i>
+                            <span>إتمام الشراء وإرسال الويب هوك</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="glass-panel border-t border-amber-500/30 py-6 text-center text-xs text-amber-300/60 mt-12">
+            <p>جميع الحقوق محفوظة © متجر مود الشرطة MK3</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden p-4">
+        <div class="glass-panel p-8 rounded-3xl max-w-md w-full text-center border-2 border-amber-500/50 shadow-2xl animate-orange-glow">
+            <div class="w-20 h-20 bg-emerald-500/20 border-2 border-emerald-500 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2">تم إرسال طلبك بنجاح!</h3>
+            <p class="text-amber-200/90 text-sm mb-6 leading-relaxed font-semibold">
+                راجعنا في الدسكورد عبر تذكرة شراء من المتجر لإستلام طلبك فوراً.
+            </p>
+            <button onclick="closeSuccessModal()" class="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold rounded-xl transition shadow-lg">
+                العودة للمتجر
+            </button>
+        </div>
+    </div>
+
+    <div id="msg-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden p-4">
+        <div class="glass-panel p-6 rounded-2xl max-w-sm w-full text-center border border-amber-500/50 shadow-2xl">
+            <div class="w-12 h-12 bg-amber-500/20 border border-amber-500 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h4 id="msg-title" class="text-lg font-bold text-white mb-1">تنبيه</h4>
+            <p id="msg-text" class="text-amber-200 text-sm mb-5">رسالة التنبيه هنا</p>
+            <button onclick="closeMsgModal()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-sm transition shadow-md">حسناً</button>
+        </div>
+    </div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        const products = [
+            { id: 1, category: "citizen", name: "🚗・𝐒𝐏𝐄𝐂𝐈𝐀𝐋 𝐂𝐀𝐑", description: "سيارات مميزه", priceRiyal: 5, priceCredit: 1000000, icon: "fa-car-side" },
+            { id: 2, category: "citizen", name: "〢 G O L D", description: "حزمه تحتوي على سيارات رفاهيه", priceRiyal: 4, priceCredit: 900000, icon: "fa-gem" },
+            { id: 3, category: "citizen", name: "🏅 vip  حزمة ・الــمواطنين", description: "حزمة مواطنين تحتوي على سيارات تفجير وجميله", priceRiyal: 3, priceCredit: 500000, icon: "fa-award" },
+            { id: 4, category: "citizen", name: "💊 حزمة ・تهريب", description: "حزمة تحتوي على مركبات تهريب وشكل قديم", priceRiyal: 7, priceCredit: 1500000, icon: "fa-mask" },
+            { id: 5, category: "citizen", name: "🎮  حزمة・ هجوله", description: "حزمة تحتوي على سيارات بوزنيات هجولة", priceRiyal: 10, priceCredit: 2000000, icon: "fa-gamepad" },
+            { id: 6, category: "citizen", name: "⚙️ حزمة ・مرهمات", description: "حزمه تحتوي على سيارات مرهمه", priceRiyal: 8, priceCredit: 1300000, icon: "fa-gears" },
+            { id: 7, category: "military", name: "🚗・𝑺𝑷𝑬𝑪𝑰𝑨𝑳・𝑪𝑨𝑹・𝑷𝑶𝑳𝑰𝑪𝑬", description: "حزمه تحتوي على سيارات عسكري رياضيه ومميزه", priceRiyal: 4, priceCredit: 800000, icon: "fa-shield-halved" },
+            { id: 8, category: "military", name: "🚨 𝐏𝐥𝐚𝐭𝐢𝐧𝐮𝐦", description: "حزمه تحتوي على مركبات عسكريه سريه", priceRiyal: 7, priceCredit: 1400000, icon: "fa-lightbulb" },
+            { id: 9, category: "military", name: "👨🏼‍✈️ حزمة   مكافحة   المخدرات 👨🏼‍✈️", description: "تصريح لقطاع مكافحة المخدرات", priceRiyal: 0, priceCredit: 0, icon: "fa-user-ninja" },
+            { id: 10, category: "military", name: "🦅حزمة قوات الطوارئ 🦅", description: "تصريح لقطاع الطوارئ الخاصة", priceRiyal: 0, priceCredit: 0, icon: "fa-bolt" },
+            { id: 11, category: "military", name: "حزمة وكالة شؤون الافواج الأمنية", description: "تصريح لقطاع وكالة شؤون الافواج الامنية", priceRiyal: 0, priceCredit: 0, icon: "fa-building-shield" }
+        ];
+
+        let cart = [];
+        let currentFilter = 'all';
+        let appliedDiscount = 0;
+        let discountName = "";
+        let uploadedReceiptFile = null;
+        let receiptBase64 = "";
+
+        window.onload = function() { renderProducts('all'); };
+
+        function enterStore() {
+            const intro = document.getElementById('intro-screen');
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.classList.add('hidden');
+                document.getElementById('main-store').classList.remove('hidden');
+            }, 700);
+        }
+
+        function scrollToCart() {
+            document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function filterCategory(category) {
+            currentFilter = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn px-4 py-2 rounded-xl text-sm font-bold bg-amber-950/60 text-amber-200 hover:bg-amber-900/60 border border-amber-700/40 transition";
+            });
+
+            if (category === 'all') {
+                document.getElementById('cat-all').className = "category-btn px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md transition";
+                document.getElementById('product-count-badge').innerText = "عرض جميع المنتجات";
+            } else if (category === 'citizen') {
+                document.getElementById('cat-citizen').className = "category-btn px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md transition";
+                document.getElementById('product-count-badge').innerText = "حزم المواطنين";
+            } else if (category === 'military') {
+                document.getElementById('cat-military').className = "category-btn px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-md transition";
+                document.getElementById('product-count-badge').innerText = "حزم العسكرية";
+            }
+
+            renderProducts(category);
+        }
+
+        function renderProducts(filter) {
+            const grid = document.getElementById('products-grid');
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            const currentCurrency = document.querySelector('input[name="payment-method"]:checked').value;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-amber-300/50"><i class="fa-solid fa-box-open text-4xl mb-3 block"></i><p class="font-bold">لا توجد منتجات متاحة في هذا القسم حالياً</p></div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => {
+                const itemPrice = currentCurrency === 'كردت' ? p.priceCredit : p.priceRiyal;
+                const priceDisplay = itemPrice === 0 ? "مجاني" : `${itemPrice} ${currentCurrency}`;
+
+                return `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border border-amber-500/30 shadow-lg">
+                        <div class="relative h-48 overflow-hidden bg-amber-950/60 flex items-center justify-center p-4">
+                            <i class="fa-solid ${p.icon} text-6xl text-amber-400 group-hover:scale-110 transition duration-500 drop-shadow-xl"></i>
+                            <div class="absolute top-3 right-3 bg-amber-900/95 backdrop-blur-md text-amber-200 text-xs px-3.5 py-1 rounded-full font-black border border-amber-400/40 shadow-md">
+                                ${priceDisplay}
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow justify-between">
+                            <div>
+                                <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-1 block">
+                                    ${p.category === 'citizen' ? '👤 حزمة مواطنين' : '🛡️ حزمة عسكرية'}
+                                </span>
+                                <h3 class="font-bold text-lg text-white mb-1.5">${p.name}</h3>
+                                <p class="text-xs text-amber-200/70 mb-4 line-clamp-2 leading-relaxed">${p.description}</p>
+                            </div>
+                            <button onclick="addToCart(${p.id})" class="w-full py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md shadow-amber-900/30 border border-amber-300/30">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>شراء / إضافة للسلة</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const currentCurrency = document.querySelector('input[name="payment-method"]:checked').value;
+            const price = currentCurrency === 'كردت' ? product.priceCredit : product.priceRiyal;
+
+            const existing = cart.find(item => item.id === productId && item.currency === currentCurrency);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1, currency: currentCurrency, activePrice: price });
+            }
+            updateCartUI();
+            showToast(`تمت إضافة "${product.name}" إلى السلة`);
+        }
+
+        function removeFromCart(productId, currency) {
+            cart = cart.filter(item => !(item.id === productId && item.currency === currency));
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items');
+            const badge = document.getElementById('cart-badge');
+            const countText = document.getElementById('cart-count-text');
+            const currentCurrency = document.querySelector('input[name="payment-method"]:checked').value;
+
+            cart.forEach(item => {
+                item.currency = currentCurrency;
+                item.activePrice = currentCurrency === 'كردت' ? item.priceCredit : item.priceRiyal;
+            });
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            badge.innerText = totalItems;
+            countText.innerText = `${totalItems} منتجات`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-amber-300/40 text-sm"><i class="fa-solid fa-cart-arrow-down text-3xl mb-2 block text-amber-500/50"></i>السلة فارغة حالياً</div>`;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="glass-panel p-3 rounded-xl flex items-center justify-between border border-amber-600/30">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-black/40 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white line-clamp-1">${item.name}</h4>
+                                <span class="text-xs text-amber-400 font-bold">${item.activePrice === 0 ? 'مجاني' : (item.activePrice * item.quantity) + ' ' + currentCurrency}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-amber-950 px-2.5 py-0.5 rounded text-amber-200 font-bold border border-amber-800/50">×${item.quantity}</span>
+                            <button onclick="removeFromCart(${item.id}, '${item.currency}')" class="text-red-400 hover:text-red-300 p-1.5 transition">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            calculateTotals();
+            renderProducts(currentFilter);
+        }
+
+        function applyCoupon() {
+            const codeInput = document.getElementById('coupon-input').value.trim().toUpperCase();
+            const msgEl = document.getElementById('coupon-message');
+            msgEl.classList.remove('hidden');
+
+            if (codeInput === "MK3 ON TOP") {
+                appliedDiscount = 0.25;
+                discountName = "MK3 ON TOP (25%)";
+                msgEl.className = "text-xs mt-1.5 text-emerald-400 font-bold";
+                msgEl.innerText = "تم تطبيق خصم 25% بنجاح!";
+            } else if (codeInput === "ABU KHALID") {
+                appliedDiscount = 0.50;
+                discountName = "ABU KHALID (50%)";
+                msgEl.className = "text-xs mt-1.5 text-emerald-400 font-bold";
+                msgEl.innerText = "تم تطبيق خصم 50% بنجاح!";
+            } else {
+                appliedDiscount = 0;
+                discountName = "";
+                msgEl.className = "text-xs mt-1.5 text-red-400 font-bold";
+                msgEl.innerText = "كود الخصم غير صحيح!";
+            }
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const currentCurrency = document.querySelector('input[name="payment-method"]:checked').value;
+            const subtotal = cart.reduce((sum, item) => sum + (item.activePrice * item.quantity), 0);
+            const discountAmount = subtotal * appliedDiscount;
+            const finalTotal = subtotal - discountAmount;
+
+            document.getElementById('subtotal-price').innerText = subtotal === 0 ? "مجاني" : subtotal + " " + currentCurrency;
+            
+            const discountRow = document.getElementById('discount-row');
+            if (appliedDiscount > 0 && subtotal > 0) {
+                discountRow.classList.remove('hidden');
+                document.getElementById('discount-name').innerText = discountName;
+                document.getElementById('discount-price').innerText = "-" + discountAmount.toFixed(0) + " " + currentCurrency;
+            } else {
+                discountRow.classList.add('hidden');
+            }
+
+            document.getElementById('total-price').innerText = finalTotal === 0 ? "مجاني" : finalTotal.toFixed(0) + " " + currentCurrency;
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedReceiptFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) { receiptBase64 = e.target.result; };
+                reader.readAsDataURL(file);
+
+                const label = document.getElementById('file-upload-label');
+                label.innerHTML = `
+                    <i class="fa-solid fa-file-image text-lg text-emerald-400 mb-1"></i>
+                    <span class="text-emerald-300 font-semibold truncate max-w-[200px]">${file.name}</span>
+                `;
+            }
+        }
+
+        function processCheckout() {
+            const discordUser = document.getElementById('discord-user').value.trim();
+            const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+            const receiptLinkInput = document.getElementById('receipt-link').value.trim();
+
+            if (cart.length === 0) { showMsgModal("السلة فارغة", "يرجى إضافة منتج واحد على الأقل لإتمام الطلب."); return; }
+            if (!discordUser) { showMsgModal("حقل مطلوب", "يرجى إدخال يوزر الديسكورد (اسم اللاعب)."); return; }
+            if (!uploadedReceiptFile && !receiptLinkInput) { showMsgModal("صورة الدفع مطلوبة", "يرجى إرفاق صورة إيصال الدفع أو وضع رابطه لإتمام الطلب."); return; }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.activePrice * item.quantity), 0);
+            const discountAmount = subtotal * appliedDiscount;
+            const finalTotal = subtotal - discountAmount;
+
+            const webhookUrl = "https://discord.com/api/webhooks/1550822226046222376/ymKEnzBj71uT0I484eTmG6ft3twHaEVn5sA1OZg0F7xJ7Wa_DjgqzCZy69p1sGM4ikaA";
+            const productsListStr = cart.map(i => `• **${i.name}** (×${i.quantity}) - ${i.activePrice === 0 ? 'مجاني' : (i.activePrice * i.quantity) + ' ' + paymentMethod}`).join('\n');
+            const receiptImageUrl = receiptLinkInput || (receiptBase64.startsWith('data:') ? receiptBase64 : 'https://placehold.co/600x400/451a03/fde68a?text=Receipt+Image');
+
+            const embedData = {
+                title: "🛒 طلب شراء جديد - متجر مود الشرطة MK3",
+                color: 0xf59e0b,
+                thumbnail: { url: "https://cdn.discordapp.com/attachments/1540669170130231366/1555604464285646919/fcbf9f7a-7a06-44ae-b1ce-3f94669d63ea__1_-removebg-preview.png?backend=b2&ex=6ac1210e&is=6abfcf8e&hm=8bb8c7f05d8fdfd650ce3a17b02ed540e6c343bbaaa17845e22fdc687860e6d7&" },
+                fields: [
+                    { name: "👤 يوزر الديسكورد (اسم اللاعب)", value: discordUser, inline: true },
+                    { name: "💳 نوع الدفع", value: paymentMethod, inline: true },
+                    { name: "📦 المنتجات المطلوبة", value: productsListStr, inline: false },
+                    { name: "🏷️ كود الخصم المستخدم", value: discountName || "بدون خصم", inline: true },
+                    { name: "💰 المجموع النهائي", value: finalTotal === 0 ? "مجاني" : `${finalTotal.toFixed(0)} ${paymentMethod}`, inline: true }
+                ],
+                image: { url: receiptImageUrl },
+                footer: { text: "متجر مود الشرطة MK3 - يرجى مراجعة التذكرة في الدسكورد لاستلام الطلب", icon_url: "https://cdn.discordapp.com/attachments/1540669170130231366/1555604464285646919/fcbf9f7a-7a06-44ae-b1ce-3f94669d63ea__1_-removebg-preview.png?backend=b2&ex=6ac1210e&is=6abfcf8e&hm=8bb8c7f05d8fdfd650ce3a17b02ed540e6c343bbaaa17845e22fdc687860e6d7&" },
+                timestamp: new Date().toISOString()
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ embeds: [embedData] })
+            }).then(() => {
+                document.getElementById('success-modal').classList.remove('hidden');
+                cart = [];
+                updateCartUI();
+                document.getElementById('discord-user').value = '';
+                document.getElementById('receipt-link').value = '';
+                document.getElementById('coupon-input').value = '';
+                uploadedReceiptFile = null;
+                receiptBase64 = "";
+                document.getElementById('file-upload-label').innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-lg text-amber-400 mb-1"></i><span>اضغط لإرفاق صورة التحويل أو السكرين</span>`;
+            }).catch(() => {
+                document.getElementById('success-modal').classList.remove('hidden');
+                cart = [];
+                updateCartUI();
+            });
+        }
+
+        function closeSuccessModal() { document.getElementById('success-modal').classList.add('hidden'); }
+        function showMsgModal(title, text) {
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-text').innerText = text;
+            document.getElementById('msg-modal').classList.remove('hidden');
+        }
+        function closeMsgModal() { document.getElementById('msg-modal').classList.add('hidden'); }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 left-5 z-50 glass-panel bg-amber-950/90 text-white px-5 py-3 rounded-2xl shadow-2xl border border-amber-500/40 text-sm flex items-center gap-3 transition-all transform translate-y-10 opacity-0 font-bold';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 50);
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
